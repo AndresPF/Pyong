@@ -55,8 +55,8 @@ class Match(db.Model):
 	__tablename__ = 'Match'
 
 	id = Column(Integer, primary_key=True)
-	playerA_id = db.Column(db.Integer, db.ForeignKey('Player.id'), nullable=False)
-	playerB_id = db.Column(db.Integer, db.ForeignKey('Player.id'), nullable=False)
+	playerA_id = Column(Integer, db.ForeignKey('Player.id'), nullable=False)
+	playerB_id = Column(Integer, db.ForeignKey('Player.id'), nullable=False)
 	scoreA = Column(Integer)
 	scoreB = Column(Integer)
 	date = Column(DateTime(timezone=True))
