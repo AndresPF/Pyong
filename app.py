@@ -1,5 +1,5 @@
 import os
-from flask import Flask, request, jsonify, abort
+from flask import Flask, request, jsonify, abort, redirect
 from models import setup_db, Player, Match
 from flask_cors import CORS
 from auth import AuthError, requires_auth
@@ -38,8 +38,24 @@ def create_app(test_config=None):
 		if excited == 'true': greeting = greeting + "!!!!!"
 		return greeting
 
+	@app.route('/login')
+	def login():
+		link = 'https://' + os.environ['AUTH0_DOMAIN']
+		link += '/authorize?'
+		link += 'audience=' + os.environ['API_AUDIENCE'] + '&'
+		link += 'response_type=token&'
+		link += 'client_id=' + os.environ['CLIENT_ID'] + '&'
+		link += 'redirect_uri=' + os.environ['CALLBACK_URL']
+		return redirect(link, code=302)
+
+	@app.route('/callback')
+	def login_callback():
+		print(request.url)
+		return 'login callback page'
+
 	@app.route('/players', methods=['GET'])
-	def get_players():
+	@requires_auth('get:player')
+	def get_players(payload):
 		selection = Player.query.order_by(Player.id).all()
 
 		if len(selection) == 0:
@@ -53,7 +69,8 @@ def create_app(test_config=None):
 		})
 
 	@app.route('/players', methods=['POST'])
-	def create_player():
+	@requires_auth('post:player')
+	def create_player(payload):
 		body = request.get_json()
 
 		new_name = body.get('name', None)
@@ -72,7 +89,8 @@ def create_app(test_config=None):
 			abort(422)
 
 	@app.route('/matches', methods=['GET'])
-	def get_matches():
+	@requires_auth('get:match')
+	def get_matches(payload):
 		selection = Match.query.order_by(Match.id).all()
 		current_matches = paginate_matches(request, selection)
 
@@ -85,7 +103,8 @@ def create_app(test_config=None):
 		})
 
 	@app.route('/matches', methods=['POST'])
-	def create_match():
+	@requires_auth('post:match')
+	def create_match(payload):
 		body = request.get_json()
 
 		new_scoreA = body.get('scoreA', None)
@@ -108,7 +127,8 @@ def create_app(test_config=None):
 			abort(422)
 
 	@app.route('/matches/<int:match_id>', methods=['PATCH'])
-	def update_match(match_id):
+	@requires_auth('patch:match')
+	def update_match(payload, match_id):
 		body = request.get_json()
 		match = Match.query.get(match_id)
 
@@ -139,7 +159,8 @@ def create_app(test_config=None):
 			abort(422)
 
 	@app.route('/matches/<int:match_id>', methods=['DELETE'])
-	def delete_match(match_id):
+	@requires_auth('delete:match')
+	def delete_match(payload, match_id):
 		match = Match.query.get(match_id)
 
 		if match is None:
