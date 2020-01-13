@@ -107,6 +107,55 @@ def create_app(test_config=None):
 		except:
 			abort(422)
 
+	@app.route('/matches/<int:match_id>', methods=['PATCH'])
+	def update_match(match_id):
+		body = request.get_json()
+		match = Match.query.get(match_id)
+
+		if match is None:
+			abort(404)
+
+		new_scoreA = body.get('scoreA', None)
+		new_scoreB = body.get('scoreB', None)
+
+		if new_scoreA is None and new_scoreB is None:
+			abort(422)
+
+		try:
+			if new_scoreA is not None:
+				match.scoreA = new_scoreA
+
+			if new_scoreB is not None:
+				match.scoreB = new_scoreB
+
+			match.update()
+
+			return jsonify({
+				'success': True,
+				'match': match.format()
+			})
+
+		except:
+			abort(422)
+
+	@app.route('/matches/<int:match_id>', methods=['DELETE'])
+	def delete_match(match_id):
+		match = Match.query.get(match_id)
+
+		if match is None:
+			abort(404)
+
+		try:
+			match.delete()
+
+			return jsonify({
+				'success': True,
+				'delete': match_id
+			})
+
+		except:
+			abort(422)
+
 	## Error Handling
 
 	@app.errorhandler(422)
