@@ -1,4 +1,3 @@
-from sqlalchemy import Column, String, create_engine
 from sqlalchemy import Column, Integer, String, DateTime
 from flask_sqlalchemy import SQLAlchemy
 import json
@@ -43,12 +42,14 @@ class Player(db.Model):
 		db.session.commit()
 
 	def format(self):
+		matchesA = [match.format() for match in self.match_a]
+		matchesB = [match.format() for match in self.match_b]
 		return {
 			'id': self.id,
 			'name': self.name,
 			'email': self.email,
-			'match_a': self.match_a,
-			'match_b': self.match_b}
+			'match_a': matchesA[0:2],
+			'match_b': matchesB[0:2]}
 
 class Match(db.Model):  
 	__tablename__ = 'Match'
