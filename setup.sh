@@ -5,4 +5,3 @@ API_AUDIENCE = 'pyong'
 CLIENT_ID = 'CZWPxcURCKU3A1OTd6KFHI78voHJpPhf'
 CALLBACK_URL = 'https://pyong.herokuapp.com/callback'
 DATABASE_URL = 'postgres://postgres@localhost:5432/pyong-dev'
-SQLALCHEMY_TRACK_MODIFICATIONS = false
