@@ -26,12 +26,10 @@ class Player(db.Model):
 	id = Column(Integer, primary_key=True)
 	name = Column(String, unique=True, nullable=False)
 	email = Column(String)
-	matches = db.relationship('Matches', cascade = "all, delete")
 
-	def __init__(self, name, email="", matches=[]):
+	def __init__(self, name, email=""):
 		self.name = name
 		self.email = email
-		self.matches = matches
 
 	def insert(self):
 		db.session.add(self)
@@ -49,24 +47,38 @@ class Player(db.Model):
 			'id': self.id,
 			'name': self.name,
 			'email': self.email,
-			'matches': self.matches}
+			'match_a': self.match_a,
+			'match_b': self.match_b}
 
-class Matches(db.Model):  
-	__tablename__ = 'Matches'
+class Match(db.Model):  
+	__tablename__ = 'Match'
 
 	id = Column(Integer, primary_key=True)
+	playerA_id = db.Column(db.Integer, db.ForeignKey('Player.id'), nullable=False)
+	playerB_id = db.Column(db.Integer, db.ForeignKey('Player.id'), nullable=False)
 	scoreA = Column(Integer)
 	scoreB = Column(Integer)
-	date = Column(DateTime)
-	playerA = db.relationship("Player", back_populates="matches")
-	playerB = db.relationship("Player", back_populates="matches")
+	date = Column(DateTime(timezone=True))
+	playerA = db.relationship(Player, lazy="joined", foreign_keys="Match.playerA_id", backref="match_a")
+	playerB = db.relationship(Player, lazy="joined", foreign_keys="Match.playerB_id", backref="match_b")
 
-	def __init__(self, scoreA, scoreB, date, playerA, playerB):
+	def __init__(self, scoreA, scoreB, date, playerA_id, playerB_id):
 		self.scoreA = scoreA
 		self.scoreB = scoreB
 		self.date = date
-		self.playerA = playerA
-		self.playerB = playerB
+		self.playerA_id = playerA_id
+		self.playerB_id = playerB_id
+
+	def insert(self):
+		db.session.add(self)
+		db.session.commit()
+	
+	def update(self):
+		db.session.commit()
+
+	def delete(self):
+		db.session.delete(self)
+		db.session.commit()
 
 	def format(self):
 		return {
@@ -74,5 +86,5 @@ class Matches(db.Model):
 			'scoreA': self.scoreA,
 			'scoreB': self.scoreB,
 			'date': self.date,
-			'playerA': self.playerA,
-			'playerB': self.playerB}
+			'playerA': self.playerA.name,
+			'playerB': self.playerB.name}

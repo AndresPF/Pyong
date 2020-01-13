@@ -1,8 +1,22 @@
 import os
-from flask import Flask
-from models import setup_db
+from flask import Flask, request, jsonify, abort
+from models import setup_db, Player, Match
 from flask_cors import CORS
 from auth import AuthError, requires_auth
+from datetime import datetime
+import pytz
+
+MATCHES_PER_PAGE = 10
+
+def paginate_matches(request, selection):
+	page = request.args.get('page', 1, type=int)
+	start =  (page - 1) * MATCHES_PER_PAGE
+	end = start + MATCHES_PER_PAGE
+
+	matches = [match.format() for match in selection]
+	current_matches = matches[start:end]
+
+	return current_matches
 
 def create_app(test_config=None):
 
@@ -14,7 +28,7 @@ def create_app(test_config=None):
 	@app.after_request
 	def after_request(response):
 		response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization,true')
-		response.headers.add('Access-Control-Allow-Methods', 'GET,POST,DELETE')
+		response.headers.add('Access-Control-Allow-Methods', 'GET,POST,PATCH,DELETE')
 		return response
 
 	@app.route('/')
@@ -24,9 +38,74 @@ def create_app(test_config=None):
 		if excited == 'true': greeting = greeting + "!!!!!"
 		return greeting
 
-	@app.route('/players')
+	@app.route('/players', methods=['GET'])
 	def get_players():
-		return "Be cool, man, be coooool! You're almost a FSND grad!"
+		selection = Player.query.order_by(Player.id).all()
+
+		if len(selection) == 0:
+			abort(404)
+
+		formatted_players = [player.format() for player in selection]
+
+		return jsonify({
+			'success': True,
+			'players': formatted_players
+		})
+
+	@app.route('/players', methods=['POST'])
+	def create_player():
+		body = request.get_json()
+
+		new_name = body.get('name', None)
+		new_email = body.get('email', None)
+
+		try:
+			player = Player(name=new_name, email=new_email)
+			player.insert()
+
+			return jsonify({
+				'success': True,
+				'created': player.id
+			})
+
+		except:
+			abort(422)
+
+	@app.route('/matches', methods=['GET'])
+	def get_matches():
+		selection = Match.query.order_by(Match.id).all()
+		current_matches = paginate_matches(request, selection)
+
+		if len(current_matches) == 0:
+			abort(404)
+
+		return jsonify({
+			'success': True,
+			'matches': current_matches,
+		})
+
+	@app.route('/matches', methods=['POST'])
+	def create_match():
+		body = request.get_json()
+
+		new_scoreA = body.get('scoreA', None)
+		new_scoreB = body.get('scoreB', None)
+		new_date = datetime.now().astimezone(pytz.UTC)
+		new_playerA_id = body.get('playerA', None)
+		new_playerB_id = body.get('playerB', None)
+
+		try:
+			match = Match(scoreA=new_scoreA, scoreB=new_scoreB, date=new_date, playerA_id=new_playerA_id, playerB_id=new_playerB_id)
+			match.insert()
+
+			return jsonify({
+				'success': True,
+				'created': match.id,
+				'date': match.date
+			})
+
+		except:
+			abort(422)
 
 	## Error Handling
 
