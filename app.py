@@ -203,7 +203,7 @@ def create_app(test_config=None):
 			"success": False,
 			"error": err.status_code,
 			"message": err.error
-			}), 401
+			}), err.status_code
 
 	return app
 
