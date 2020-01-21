@@ -1,0 +1,600 @@
+{
+	"info": {
+		"_postman_id": "8424a7fd-9840-4af0-a82b-78c9cdaa871c",
+		"name": "Pyong Heroku",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "public",
+			"item": [
+				{
+					"name": "/ - Initial",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "48b13dc9-31cd-4813-b035-a9a1965977f5",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://pyong.herokuapp.com/",
+							"protocol": "https",
+							"host": [
+								"pyong",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/players (Expired Token)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "2260ac3e-e204-42cc-a6d7-1da4ead06f04",
+								"exec": [
+									"pm.test(\"Status code is 401\", function () {",
+									"    pm.response.to.have.status(401);",
+									"});",
+									"",
+									"pm.test(\"Should include token expired message\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.success).to.be.false;",
+									"    pm.expect(jsonData.message.code).to.eql(\"token_expired\")",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlJUVTVPRUU1TnpreFFrRkdNa1F4TTBFeE1UWTJNVVpCUkRjeE1qTXdSRUV5UmpRMk5qWkVOdyJ9.eyJpc3MiOiJodHRwczovL2ZzbmQtYXBmLmF1dGgwLmNvbS8iLCJzdWIiOiJnb29nbGUtb2F1dGgyfDEwMDc5MjExNTE0ODM0NTM1MTUzNCIsImF1ZCI6WyJweW9uZyIsImh0dHBzOi8vZnNuZC1hcGYuYXV0aDAuY29tL3VzZXJpbmZvIl0sImlhdCI6MTU3ODg5NzE3NiwiZXhwIjoxNTc4OTA0Mzc2LCJhenAiOiJDWldQeGNVUkNLVTNBMU9UZDZLRkhJNzh2b0hKcFBoZiIsInNjb3BlIjoib3BlbmlkIHByb2ZpbGUgZW1haWwiLCJwZXJtaXNzaW9ucyI6WyJnZXQ6bWF0Y2giLCJnZXQ6cGxheWVyIiwicG9zdDptYXRjaCIsInBvc3Q6cGxheWVyIl19.h6rp-DBJ1034_I1BfMu4FfU4naNoS_ETgWELtddi5kdHpwPBjrBXHxXip0qhlU505sZIPgmz1gtzBoAG2QdeJ8wTGHIWByXo1TWdja3MT2cdadRIY1_N9r0jCXeoQP9F3FKEgfcej27yHP_7LZyo00K8bfF2ErQ2cydl6Qm7Rx9UgB5-4ZVQIEfCml24h5ckGSb9zThCRgmnV-qQEGK9sjZK0vSVRsInM15khHxaIGPhex9KCsd6LE6b5kZ_SgARkSALUxmXvp_azC8ZDZQ1fr1qSiQXenBK-1BA3ubkcX5zmBGF3VJYp1aIbtIbYCHvHkCBvcF4hphjwTB4k8CPLQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://pyong.herokuapp.com/players",
+							"protocol": "https",
+							"host": [
+								"pyong",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"players"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/players (No Token)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "209d44cb-8063-4b95-bae5-1381bd319be6",
+								"exec": [
+									"pm.test(\"Status code is 401\", function () {",
+									"    pm.response.to.have.status(401);",
+									"});",
+									"",
+									"pm.test(\"Should include missing token message\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.success).to.be.false;",
+									"    pm.expect(jsonData.message.code).to.eql(\"authorization_header_missing\")",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\": \"Rick\",\n\t\"email\": \"rick@test.com\"\n}"
+						},
+						"url": {
+							"raw": "https://pyong.herokuapp.com/players",
+							"protocol": "https",
+							"host": [
+								"pyong",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"players"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "Testing endpoints including failed authentication methods",
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Player",
+			"item": [
+				{
+					"name": "/players",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "9ddeabd8-073f-48c2-849c-d63a1fefe2e8",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Returns list of players\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.success).to.be.true;",
+									"    pm.expect(jsonData.players).not.empty;",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://pyong.herokuapp.com/players",
+							"protocol": "https",
+							"host": [
+								"pyong",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"players"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/players",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "646da43e-f2c2-44c9-b74f-5de269492fbc",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Create new player successful\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.success).to.be.true;",
+									"    pm.expect(jsonData.created).to.be.an('number');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\": \"Tester\",\n\t\"email\": \"tester@test.com\"\n}"
+						},
+						"url": {
+							"raw": "https://pyong.herokuapp.com/players",
+							"protocol": "https",
+							"host": [
+								"pyong",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"players"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/matches",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "9212c968-0c2b-47e6-963d-86b0811970f5",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Returns list of matches\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.success).to.be.true;",
+									"    pm.expect(jsonData.matches).not.empty;",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://pyong.herokuapp.com/matches?page=1",
+							"protocol": "https",
+							"host": [
+								"pyong",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"matches"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/matches",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "21722227-bd38-4222-bcfc-2895de667e88",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Create new player successful\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.success).to.be.true;",
+									"    pm.expect(jsonData.created).to.be.an('number');",
+									"    pm.expect(jsonData.date).to.be.an('string');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"scoreA\": 2,\n\t\"scoreB\": 1,\n\t\"playerA\": 1,\n\t\"playerB\": 4\n}"
+						},
+						"url": {
+							"raw": "https://pyong.herokuapp.com/matches",
+							"protocol": "https",
+							"host": [
+								"pyong",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"matches"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/matches",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "a88849c9-a02e-4798-baf6-0feecd498ec3",
+								"exec": [
+									"pm.test(\"Status code is 403\", function () {",
+									"    pm.response.to.have.status(403);",
+									"});",
+									"",
+									"pm.test(\"Should include unathorized message\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.success).to.be.false;",
+									"    pm.expect(jsonData.message.code).to.eql(\"unauthorized\")",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"scoreA\": 5,\n\t\"scoreB\": 4\n}"
+						},
+						"url": {
+							"raw": "https://pyong.herokuapp.com/matches/1",
+							"protocol": "https",
+							"host": [
+								"pyong",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"matches",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/matches",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "9b4db045-dfab-4d36-bf4c-7b2823cf86c4",
+								"exec": [
+									"pm.test(\"Status code is 403\", function () {",
+									"    pm.response.to.have.status(403);",
+									"});",
+									"",
+									"pm.test(\"Should include missing token message\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.success).to.be.false;",
+									"    pm.expect(jsonData.message.code).to.eql(\"unauthorized\")",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "https://pyong.herokuapp.com/matches/2",
+							"protocol": "https",
+							"host": [
+								"pyong",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"matches",
+								"2"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "Testing folder for users with authorization role \"Player\"",
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlJUVTVPRUU1TnpreFFrRkdNa1F4TTBFeE1UWTJNVVpCUkRjeE1qTXdSRUV5UmpRMk5qWkVOdyJ9.eyJpc3MiOiJodHRwczovL2ZzbmQtYXBmLmF1dGgwLmNvbS8iLCJzdWIiOiJnb29nbGUtb2F1dGgyfDEwMDc5MjExNTE0ODM0NTM1MTUzNCIsImF1ZCI6WyJweW9uZyIsImh0dHBzOi8vZnNuZC1hcGYuYXV0aDAuY29tL3VzZXJpbmZvIl0sImlhdCI6MTU3OTU2MTUyOCwiZXhwIjoxNTc5NjQ3OTI4LCJhenAiOiJDWldQeGNVUkNLVTNBMU9UZDZLRkhJNzh2b0hKcFBoZiIsInNjb3BlIjoib3BlbmlkIHByb2ZpbGUgZW1haWwiLCJwZXJtaXNzaW9ucyI6WyJnZXQ6bWF0Y2giLCJnZXQ6cGxheWVyIiwicG9zdDptYXRjaCIsInBvc3Q6cGxheWVyIl19.NAcbkP0RHl0DxMHoXALrmhtIHTYSwmHghK-9ThlNUeGRtSTf4pyLwfvRlVrRLv4rtd-6qYJAlHGzckY6lI8G6N_62dr2NrooxAl306DRL7CICsLW8vI7OPk1H2tg4_G5x9kc7Tl8MBW3fa5iH2gzWVfMLP_8NpuoiTzipx2Pn_CaOqk1ty7DYtyp94ycYvh51HtMDd89VwQbK8TGS9anjrQkyuHSGg5pFiRQDn_Le3-dJWObSakTzSKA9LC6MNgQx3N5-LDfCf3uzij-irCkDujxSYM_cTQ43Y9eLgq018e15ZjjOohMaryd5xhYPbfIvqxS_1uiE-skutXEJOV8XQ",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "98743c93-bc12-4455-9817-1817ecd1019b",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "7e73ff72-36cf-416f-9619-bd79eb448ee6",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Admin",
+			"item": [
+				{
+					"name": "/matches",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "b8544454-c1ad-4fe3-bcf6-b95e77381304",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Returns updated match info\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.success).to.be.true;",
+									"    pm.expect(jsonData.match).to.be.an('object');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"scoreA\": 5,\n\t\"scoreB\": 4\n}"
+						},
+						"url": {
+							"raw": "https://pyong.herokuapp.com/matches/2",
+							"protocol": "https",
+							"host": [
+								"pyong",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"matches",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/matches",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "29db08ed-8472-4df7-8853-1c339865b277",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Returns id of deleted match with a success set to true\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.success).to.be.true;",
+									"    pm.expect(jsonData.delete).to.be.an('number');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "https://pyong.herokuapp.com/matches/5",
+							"protocol": "https",
+							"host": [
+								"pyong",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"matches",
+								"5"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "Testing folder for users with authorization role \"Admin\"",
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlJUVTVPRUU1TnpreFFrRkdNa1F4TTBFeE1UWTJNVVpCUkRjeE1qTXdSRUV5UmpRMk5qWkVOdyJ9.eyJpc3MiOiJodHRwczovL2ZzbmQtYXBmLmF1dGgwLmNvbS8iLCJzdWIiOiJnb29nbGUtb2F1dGgyfDEwNzcwODg1MDE1MjE1MTM5NDAzNSIsImF1ZCI6WyJweW9uZyIsImh0dHBzOi8vZnNuZC1hcGYuYXV0aDAuY29tL3VzZXJpbmZvIl0sImlhdCI6MTU3OTU2MTU2MSwiZXhwIjoxNTc5NjQ3OTYxLCJhenAiOiJDWldQeGNVUkNLVTNBMU9UZDZLRkhJNzh2b0hKcFBoZiIsInNjb3BlIjoib3BlbmlkIHByb2ZpbGUgZW1haWwiLCJwZXJtaXNzaW9ucyI6WyJkZWxldGU6bWF0Y2giLCJkZWxldGU6cGxheWVyIiwiZ2V0Om1hdGNoIiwiZ2V0OnBsYXllciIsInBhdGNoOm1hdGNoIiwicG9zdDptYXRjaCIsInBvc3Q6cGxheWVyIl19.Wdm0koPQbDqhwoefHU52u7odve_1nZKbnLtduw-p2cOXR90BKJkQlboIw1qQF7_OTKAbFY5Stuki-syHg7mUxgpp218PycpJ8I5VFG7GM2_zO7_co6DngqI9JE3-ZqS619gMlYorFIprkQVZFITYAL0c9NWVnXuFtTbtU7NyRfW_M0p5Q1JWuvNSrdHc4s_j988nwGQCP0MRl1CEF91tafQile-GBTmasfNjjTEl84_wPIOfhBhDuTea1lsaGt0vnlnPBydyN5kdRPKdsJN3ISCqxbb2t0yDzTT4YRn7V46TV3oUjm9ma13A1FHdhNgoIYwg5XCD2ih0Jk_DVU_bmg",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "eb4a1cc2-d1b8-480d-82c0-82c6174c1812",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "ac48b661-b98b-4562-a557-21b1648dcf7a",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			],
+			"protocolProfileBehavior": {}
+		}
+	],
+	"protocolProfileBehavior": {}
+}
