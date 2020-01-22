@@ -184,4 +184,11 @@ Example:
 ```
 
 ## Testing
-To run the tests, use the provided `postman_collection.json` file running on [Postman](https://www.getpostman.com/)
+To run the tests, use the provided `test_app.py` file.
+
+Make sure you have your database environmental variable set to the dev one:
+`export DATABASE_URL = 'postgres://postgres@localhost:5432/pyong-dev'`
+
+```
+python test_app.py
+```
